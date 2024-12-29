@@ -28,13 +28,25 @@ public class TestDataBaseIT extends QuickTxBaseIT {
     @BeforeAll
     static void setupAll() {
         //addr_test1qp73ljurtknpm5fgey5r2y9aympd33ksgw0f8rc5khheg83y35rncur9mjvs665cg4052985ry9rzzmqend9sqw0cdksxvefah
-        String senderMnemonic = "drive useless envelope shine range ability time copper alarm museum near flee wrist live type device meadow allow churn purity wisdom praise drop code";
+      /*  String senderMnemonic = "drive useless envelope shine range ability time copper alarm museum near flee wrist live type device meadow allow churn purity wisdom praise drop code";
         sender1 = new Account(Networks.testnet(), senderMnemonic);
         sender1Addr = sender1.baseAddress();
 
         //addr_test1qz5fcpvkg7pekqvv9ld03t5sx2w2c2fac67fzlaxw5844s83l4p6tr389lhgcpe4797kt7xkcxqvcc4a6qjshzsmta8sh3ncs4
         String sender2Mnemonic = "access else envelope between rubber celery forum brief bubble notice stomach add initial avocado current net film aunt quick text joke chase robust artefact";
         sender2 = new Account(Networks.testnet(), sender2Mnemonic);
+        sender2Addr = sender2.baseAddress();
+*/
+
+        backendType = BLOCKFROST;
+
+        //TESTNET
+        String senderMnemonic = "hello fiction toss renew expose churn gospel insect accident kit inflict size actual point prosper task walnut federal fiber near danger toward dawn coral";
+        sender1 = new Account(Networks.preprod(), senderMnemonic);
+        sender1Addr = sender1.baseAddress();
+
+        String sender2Mnemonic = "chicken gorilla draft jelly fiction denial boss worth conduct gallery field sorry enroll noise rebel client fall large come gym undo anchor doctor fork";
+        sender2 = new Account(Networks.preprod(), sender2Mnemonic);
         sender2Addr = sender2.baseAddress();
 
         if (backendType.equals(DEVKIT)) {

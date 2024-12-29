@@ -2,6 +2,7 @@ package com.bloxbean.cardano.client.backend.api;
 
 import co.nstant.in.cbor.CborException;
 import co.nstant.in.cbor.model.ByteString;
+import com.bloxbean.cardano.client.CustomSetup;
 import com.bloxbean.cardano.client.api.model.Utxo;
 import com.bloxbean.cardano.client.backend.blockfrost.common.Constants;
 import com.bloxbean.cardano.client.backend.blockfrost.service.BFBackendService;
@@ -29,6 +30,7 @@ public class BaseITTest {
     public BackendService getBackendService() {
         if (BLOCKFROST.equals(backendType)) {
             String bfProjectId = System.getProperty("BF_PROJECT_ID");
+            bfProjectId = CustomSetup.getBfProjectId(bfProjectId);
             if (bfProjectId == null || bfProjectId.isEmpty()) {
                 bfProjectId = System.getenv("BF_PROJECT_ID");
             }

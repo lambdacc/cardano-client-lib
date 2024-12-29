@@ -4,5 +4,7 @@ dependencies {
     implementation project(':backend-modules:blockfrost')
     implementation project(':backend-modules:koios')
     implementation project(':backend-modules:ogmios')
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jdk8
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.17.2'
 }
 

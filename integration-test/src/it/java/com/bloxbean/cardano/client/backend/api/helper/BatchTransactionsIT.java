@@ -28,9 +28,14 @@ import com.bloxbean.cardano.client.transaction.spec.*;
 import com.bloxbean.cardano.client.util.JsonUtil;
 import com.bloxbean.cardano.client.api.util.PolicyUtil;
 import com.bloxbean.cardano.client.util.Tuple;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +49,7 @@ import static com.bloxbean.cardano.client.function.helper.InputBuilders.createFr
 import static com.bloxbean.cardano.client.function.helper.MintCreators.mintCreator;
 import static com.bloxbean.cardano.client.function.helper.OutputBuilders.createFromMintOutput;
 import static com.bloxbean.cardano.client.function.helper.SignerProviders.signerFrom;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 //Additional tests for TransactionHelperService
@@ -81,17 +87,26 @@ public class BatchTransactionsIT extends BaseITTest {
         transactionHelperService = new TransactionHelperService(transactionBuilder, new DefaultTransactionProcessor(transactionService));
         feeCalculationService = backendService.getFeeCalculationService(transactionHelperService);
 
-        String senderMnemonic = "capable venture stove poet great turtle hurdle photo improve tongue light bean orchard negative clog forest page coil never report hammer grid waste cigar";
-        sender = new Account(Networks.testnet(), senderMnemonic);
+        // PREPROD
+        //addr_test1qpnasa97xlv7w20hnqq9k2qcm06qzqjctnmx3h8g0wz95m2adznngyqdrkk7d3dxzjgpz440mu5azyk2ymw77gqn2xpqj9p8e7
+        String senderMnemonic = "energy peace zone over road worry giggle update woman segment sibling oval card casual repair local gas talent zero spice broken wreck flight swap";
+        sender = new Account(Networks.preprod(), senderMnemonic);
         senderAddress = sender.baseAddress();
 
-        receiverMnemonic = "tired cannon pig ski jar plastic shiver moon ordinary want token dutch excuse hat club laugh differ spice random mean endless creek despair country";
+
+        /*String senderMnemonic = "capable venture stove poet great turtle hurdle photo improve tongue light bean orchard negative clog forest page coil never report hammer grid waste cigar";
+        sender = new Account(Networks.testnet(), senderMnemonic);
+        senderAddress = sender.baseAddress();
+*/
+         receiverMnemonic = "fog toilet swim consider oxygen flock disagree large banner chat bargain curious cancel swear gadget video high fine simple entire amount garment ticket size";
+
+        //receiverMnemonic = "tired cannon pig ski jar plastic shiver moon ordinary want token dutch excuse hat club laugh differ spice random mean endless creek despair country";
     }
 
     @Test
     public void transferMultiAssetMultiPayments_whenSingleSender_multiReceivers_highLevelApi() throws Exception {
         //Mint 10 tokens
-        List<String> units = mintMultipleTokens(sender, 10);
+        List<String> units = mintMultipleTokens(sender, 1);
 
         ArrayList<PaymentTransaction> paymentTransactionArrayList = new ArrayList<>();
 
@@ -175,27 +190,33 @@ public class BatchTransactionsIT extends BaseITTest {
         String receiver = sender.baseAddress();
 
         Policy policy = PolicyUtil.createMultiSigScriptAllPolicy("policy-1", 1);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new Jdk8Module());
+        ObjectWriter writer = objectMapper.writer(new DefaultPrettyPrinter());
+        writer.writeValue(new File("/home/hdd/tmp/bloxbean/policy-1.json"), policy);
+        writer.writeValue(new File("/home/hdd/tmp/bloxbean/policy-1.skey"), policy.getPolicyKeys().stream().findFirst());
 
-        //Multi asset and NFT metadata
+                //Multi asset and NFT metadata
         MultiAsset multiAsset = new MultiAsset();
         multiAsset.setPolicyId(policy.getPolicyId());
 
         NFTMetadata nftMetadata = NFTMetadata.create().version(1);
 
-        for (int i = 0; i < 10; i++) {
-            Asset asset = new Asset("TestNFT-" + i, BigInteger.valueOf(1));
+        for (int i = 1; i < 2; i++) {
+
+            Asset asset = new Asset("TestW3KOToken-" + i, BigInteger.valueOf(100));
             multiAsset.getAssets().add(asset);
 
             NFT nft = NFT.create()
                     .assetName(asset.getName())
                     .name(asset.getName())
-                    .image("ipfs://Qmcv6hwtmdVumrNeb42R1KmCEWdYWGcqNgs17Y3hj6CkP4")
+                    .image("ipfs://QmSv4CrpH5zercZuKrdrabmH3gov8tyZtA1fCVgTGxcrus")
                     .mediaType("image/png")
                     .addFile(NFTFile.create()
                             .name("file-1")
                             .mediaType("image/png")
-                            .src("ipfs/Qmcv6hwtmdVumrNeb42R1KmCEWdYWGcqNgs17Y3hj6CkP4"))
-                    .description("This is a test NFT - " + i);
+                            .src("ipfs/QmSv4CrpH5zercZuKrdrabmH3gov8tyZtA1fCVgTGxcrus"))
+                    .description("A test token - " + i);
 
             nftMetadata.addNFT(policy.getPolicyId(), nft);
         }

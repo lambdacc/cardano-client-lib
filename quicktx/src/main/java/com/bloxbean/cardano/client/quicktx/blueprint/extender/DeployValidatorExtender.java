@@ -34,7 +34,7 @@ public interface DeployValidatorExtender<T> extends ValidatorExtender {
     }
 
     /**
-     * Create a {@link com.bloxbean.cardano.client.quicktx.QuickTxBuilder.TxContext} to deploy the script. This will create an output with 1 lovelace and reference script bytes at script address.
+     * Create a {@link QuickTxBuilder.TxContext} to deploy the script. This will create an output with 1 lovelace and reference script bytes at script address.
      * TxContext can be used to sign and submit the transaction.
      *
      * @param deployerAddr Deployer/Fee payer address

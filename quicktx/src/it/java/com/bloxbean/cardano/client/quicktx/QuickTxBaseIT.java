@@ -27,6 +27,7 @@ public class QuickTxBaseIT {
     public BackendService getBackendService() {
         if (BLOCKFROST.equals(backendType)) {
             String bfProjectId = System.getProperty("BF_PROJECT_ID");
+            bfProjectId = CustomSetup.getBfProjectId(bfProjectId);
             if (bfProjectId == null || bfProjectId.isEmpty()) {
                 bfProjectId = System.getenv("BF_PROJECT_ID");
             }

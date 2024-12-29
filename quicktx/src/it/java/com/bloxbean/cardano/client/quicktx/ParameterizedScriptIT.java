@@ -214,4 +214,49 @@ public class ParameterizedScriptIT extends TestDataBaseIT {
         System.out.println(result);
         assertTrue(result.isSuccessful());
     }
+
+    void voucherMintContract() throws ApiException {
+        String voucherMintScript = "590167010100323232323232322533300232323232325332330083001300937540042646464a66601660080022a66601c601a6ea80180085854ccc02ccdc3a40040022a66601c601a6ea80180085858c02cdd50028991929998071808801099192999806980318071baa0081533300d3370e002906400899b8f002488104534d504c0014a02a66601a66e1c00520c70113371e00491104534d504c0014a06eb4c038008dd718060008b180780099299980519b8748008c02cdd50008a5eb7bdb1804dd5980798061baa00132330010013756601e602060206020602060186ea8018894ccc0380045300103d87a8000132333222533300f3372200e0062a66601e66e3c01c00c4cdd2a4000660266e980092f5c02980103d87a8000133006006001375c601a0026eacc038004c048008c040004dd7180698051baa002370e90000b1805980600198050011804801180480098021baa00114984d9595cd2ab9d5573caae7d5d02ba157441";
+
+        System.out.println("Sender Address: " + sender1Addr);
+        UtxoSelector utxoSelector = new DefaultUtxoSelector(utxoSupplier);
+        Optional<Utxo> utxoOptional = utxoSelector.findFirst(sender1Addr, utxo -> utxo.getAmount().stream()
+                .anyMatch(a -> LOVELACE.equals(a.getUnit()) && a.getQuantity().compareTo(adaToLovelace(2)) >= 0)); //Find an utxo with at least 2 ADA
+
+        Utxo utxo = utxoOptional.orElseThrow();
+
+        //Create Contract parameter
+        String tokenName = "XYZ-1000ADA-Voucher";
+        PlutusData outputRef =  ConstrPlutusData.of(0,
+                ConstrPlutusData.of(0,
+                        BytesPlutusData.of(HexUtil.decodeHexString(utxo.getTxHash()))),
+                BigIntPlutusData.of(utxo.getOutputIndex()));
+
+        Address address = new Address(sender2Addr);
+
+        ListPlutusData params = ListPlutusData.of(BytesPlutusData.of(address.getBytes()));
+
+        //Apply param to script and get compiled code
+        String compiledCode = AikenScriptUtil.applyParamToScript(params, voucherMintScript);
+        //convert Aiken compiled code to PlutusScript
+        PlutusScript voucherPlutusScript = PlutusBlueprintUtil.getPlutusScriptFromCompiledCode(compiledCode, PlutusVersion.v2);
+
+        PlutusData mintAction = ConstrPlutusData.of(0);
+        ScriptTx scriptTx = new ScriptTx()
+                .collectFrom(utxo)
+                .mintAsset(voucherPlutusScript, new Asset(tokenName, BigInteger.valueOf(1)), mintAction, sender1Addr);
+
+        Result<String> result = new QuickTxBuilder(backendService)
+                .compose(scriptTx)
+                .feePayer(sender1Addr)
+                .withSigner(SignerProviders.signerFrom(sender1))
+                .withTxEvaluator(aikenEvaluation? new AikenTransactionEvaluator(backendService): null)
+                .withTxInspector(transaction -> {
+                    System.out.println(transaction);
+                }).completeAndWait(System.out::println);
+
+        System.out.println(result);
+        assertTrue(result.isSuccessful());
+    }
+
 }

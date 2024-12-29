@@ -59,16 +59,35 @@ public class QuickTxBuilderIT extends QuickTxBaseIT {
     @BeforeAll
     static void setupAll() {
         //Set the backend type
-        backendType = DEVKIT;
+        backendType = BLOCKFROST;
 
         //addr_test1qp73ljurtknpm5fgey5r2y9aympd33ksgw0f8rc5khheg83y35rncur9mjvs665cg4052985ry9rzzmqend9sqw0cdksxvefah
-        String senderMnemonic = "drive useless envelope shine range ability time copper alarm museum near flee wrist live type device meadow allow churn purity wisdom praise drop code";
-        sender1 = new Account(Networks.testnet(), senderMnemonic);
+        //String senderMnemonic = "drive useless envelope shine range ability time copper alarm museum near flee wrist live type device meadow allow churn purity wisdom praise drop code";
+
+        // PREPROD
+        //addr_test1qpnasa97xlv7w20hnqq9k2qcm06qzqjctnmx3h8g0wz95m2adznngyqdrkk7d3dxzjgpz440mu5azyk2ymw77gqn2xpqj9p8e7
+      /*  String senderMnemonic = "energy peace zone over road worry giggle update woman segment sibling oval card casual repair local gas talent zero spice broken wreck flight swap";
+
+        sender1 = new Account(Networks.preprod(), senderMnemonic);
+        sender1Addr = sender1.baseAddress();
+*/
+        //addr_test1qz5fcpvkg7pekqvv9ld03t5sx2w2c2fac67fzlaxw5844s83l4p6tr389lhgcpe4797kt7xkcxqvcc4a6qjshzsmta8sh3ncs4
+        //String sender2Mnemonic = "access else envelope between rubber celery forum brief bubble notice stomach add initial avocado current net film aunt quick text joke chase robust artefact";
+
+        // PREPROD
+        // addr_test1qrvzhs7l38tfq73xm47463udz0j20e565qrtetcflrzkh62h5v7sju9lg04hct76axels6mh9kluqnj0yn3wtv0ysfesnjr2f6
+      /*  String sender2Mnemonic = "fog toilet swim consider oxygen flock disagree large banner chat bargain curious cancel swear gadget video high fine simple entire amount garment ticket size";
+
+        sender2 = new Account(Networks.preprod(), sender2Mnemonic);
+        sender2Addr = sender2.baseAddress();
+*/
+        //TESTNET
+        String senderMnemonic = "hello fiction toss renew expose churn gospel insect accident kit inflict size actual point prosper task walnut federal fiber near danger toward dawn coral";
+        sender1 = new Account(Networks.preprod(), senderMnemonic);
         sender1Addr = sender1.baseAddress();
 
-        //addr_test1qz5fcpvkg7pekqvv9ld03t5sx2w2c2fac67fzlaxw5844s83l4p6tr389lhgcpe4797kt7xkcxqvcc4a6qjshzsmta8sh3ncs4
-        String sender2Mnemonic = "access else envelope between rubber celery forum brief bubble notice stomach add initial avocado current net film aunt quick text joke chase robust artefact";
-        sender2 = new Account(Networks.testnet(), sender2Mnemonic);
+        String sender2Mnemonic = "chicken gorilla draft jelly fiction denial boss worth conduct gallery field sorry enroll noise rebel client fall large come gym undo anchor doctor fork";
+        sender2 = new Account(Networks.preprod(), sender2Mnemonic);
         sender2Addr = sender2.baseAddress();
 
         if (backendType.equals(DEVKIT)) {
